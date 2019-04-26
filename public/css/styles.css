@@ -1,0 +1,36 @@
+.no-dropdown-down-icon::after {
+    display: none;
+}
+.address-container {
+    width: 300px;
+    white-space: normal;
+}
+.passtrengthMeter .tooltip {
+    opacity: 1 !important;
+    top: 128% !important;
+}
+.passtrengthMeter::after {
+    height: 10px !important;
+    bottom: -10px !important;
+}
+@media only screen and (max-width: 768px) {
+    .login-block .auth-box.register {
+        max-width: 100%;
+    }
+}
+table tr td {
+    vertical-align: middle !important;
+}
+@media only screen and (max-width: 1024px) {
+    .navbar.header-navbar {
+        min-height: unset !important;
+    }
+    .navbar.header-navbar img {
+        padding: 0 !important;
+        width: 76% !important;
+    }
+
+}
+.form-material textarea{
+    height: auto !important;
+}

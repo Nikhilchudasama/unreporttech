@@ -1,4 +1,4 @@
-    <form role="form" id="add-form" autocomplete="off" enctype="multipart/form-data" class="form-material" method="post"  action="{{ route('admin.subUser.store') }}" enctype="multipart/form-data">
+    <form role="form" id="add-form" autocomplete="off" enctype="multipart/form-data" class="form-material" method="post"  action="{{ route('admin.user.store') }}" enctype="multipart/form-data">
         @csrf
         <div class="modal-body">
             <div class="row">
@@ -20,6 +20,13 @@
                         <input type="text" name="name" class="form-control" required>
                         <span class="form-bar"></span>
                         <label class="float-label">Name</label>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <div class="form-group form-default">
+                        <input type="text" name="mobile" class="form-control" maxlength="10" required>
+                        <span class="form-bar"></span>
+                        <label class="float-label">Mobile No</label>
                     </div>
                 </div>
                 <div class="col-sm-3">

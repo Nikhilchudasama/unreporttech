@@ -1,4 +1,4 @@
-<form role="form" id="edit-form" autocomplete="off" enctype="multipart/form-data" class="form-material" method="post"  action="{{ route('admin.subUser.update', ['subUser' => $subUser->id]) }}" enctype="multipart/form-data">
+<form role="form" id="edit-form" autocomplete="off" enctype="multipart/form-data" class="form-material" method="post"  action="{{ route('admin.user.update', ['user' => $user->id]) }}" enctype="multipart/form-data">
     @csrf
     @method('PUT')
     <div class="modal-body">
@@ -11,28 +11,35 @@
                     <select name="branch_id" id="branch_id" class="form-control form-default" required>
                         <option value="">Select Branch</option>
                         @foreach($branches as $branch)
-                        <option value="{{ $branch->id }}" {{ $subUser->branch_id == $branch->id?'selected':''  }}>{{ $branch->name }}</option>
+                        <option value="{{ $branch->id }}" {{ $user->branch_id == $branch->id?'selected':''  }}>{{ $branch->name }}</option>
                         @endforeach
                     </select>
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group form-default">
-                    <input type="text" name="name" class="form-control" value="{{ $subUser->name }}" required>
+                    <input type="text" name="name" class="form-control" value="{{ $user->name }}" required>
                     <span class="form-bar"></span>
                     <label class="float-label">Name</label>
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group form-default">
-                    <input type="text" name="email" class="form-control" value="{{ $subUser->email }}" required>
+                    <input type="text" name="mobile" class="form-control"  maxlength="10" value="{{ $user->mobile }}" required>
+                    <span class="form-bar"></span>
+                    <label class="float-label">Mobile No</label>
+                </div>
+            </div>
+            <div class="col-sm-3">
+                <div class="form-group form-default">
+                    <input type="text" name="email" class="form-control" value="{{ $user->email }}" required>
                     <span class="form-bar"></span>
                     <label class="float-label">Email</label>
                 </div>
             </div>
             <div class="col-sm-3">
                     <label class="form-label">Status</label>
-                    <input type="checkbox" name="active" class="js-switch1 form-control" {{ $subUser->active?'checked':'' }}/>
+                    <input type="checkbox" name="active" class="js-switch1 form-control" {{ $user->active?'checked':'' }}/>
             </div>
         </div>
     </div>

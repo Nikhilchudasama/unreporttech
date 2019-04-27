@@ -28,22 +28,22 @@ Route::name('admin.')->namespace('Admin')->prefix('admin')->group(function () {
         Route::get('feeOffer/userdata', 'FeeOfferController@show')->name('feeOffer.userdata');
 
         // Sub User Resources
-        Route::resource('subUser', 'SubUserController');
-        Route::get('subUser/userdata', 'SubUserController@show')->name('subUser.userdata');
-        Route::post('/subUser/update-password', 'SubUserController@updatePassword')->name('subUser.udpate-password');
-        Route::post('/subUser/change-password', 'SubUserController@changePassword')->name('subUser.change-password');
+        Route::resource('user', 'UserController');
+        Route::get('user/userdata', 'UserController@show')->name('user.userdata');
+        Route::post('/user/update-password', 'UserController@updatePassword')->name('user.udpate-password');
+        Route::post('/user/change-password', 'UserController@changePassword')->name('user.change-password');
 
         // Student Resources
         Route::resource('student', 'StudentController');
         Route::get('student/userdata', 'StudentController@show')->name('student.userdata');
-        
+
         // Finacial Year Resources
         Route::resource('academicYear', 'AcademicYearController');
         Route::get('academicYear/userdata', 'AcademicYearController@show')->name('academicYear.userdata');
 
         // Setting Resource
         Route::resource('setting', 'SettingController');
-        
+
     });
 
     // logout user
@@ -61,19 +61,19 @@ Route::name('super_admin.')->namespace('SuperAdmin')->prefix('super-admin')->gro
         Route::post('/', 'LoginController@login');
     });
     Route::group(['middleware' => 'superadminauthcheck'], function () {
-        
+
         Route::get('/dashboard', 'DashboardController@index')->name('dashboard');
-        
+
         // User Resources
         Route::resource('user', 'UserController');
         Route::get('user/userdata', 'UserController@show')->name('user.userdata');
         Route::post('/user/change-password', 'UserController@changePassword')->name('user.change-password');
-        
+
         // logout user
         Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
     });
 });
 
-// Auth::routes();
+Auth::routes();
 
 Route::get('/home', 'HomeController@index')->name('home');

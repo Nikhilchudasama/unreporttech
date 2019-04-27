@@ -19,6 +19,7 @@ class CreateSubUsersTable extends Migration
             $table->unsignedBigInteger('branch_id')->unsigned();
             $table->uuid('uuid');
             $table->string('name');
+            $table->string('mobile')->unique();
             $table->string('email')->unique();
             $table->string('password');
             $table->boolean('active')->default(1);

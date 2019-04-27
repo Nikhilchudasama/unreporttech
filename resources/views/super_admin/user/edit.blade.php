@@ -8,16 +8,16 @@
             </div>
             <div class="col-sm-3">
                 <div class="form-group form-default">
-                    <input type="text" name="first_name" class="form-control" value="{{ $user->first_name }}" required>
+                    <input type="text" name="name" class="form-control" value="{{ $user->name }}" required>
                     <span class="form-bar"></span>
-                    <label class="float-label">First Name</label>
+                    <label class="float-label">Name</label>
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group form-default">
-                    <input type="text" name="last_name" class="form-control" value="{{ $user->last_name }}" required>
+                    <input type="text" name="mobile" class="form-control"  maxlength="10" value="{{ $user->mobile }}" required>
                     <span class="form-bar"></span>
-                    <label class="float-label">Last Name</label>
+                    <label class="float-label">Mobile No</label>
                 </div>
             </div>
             <div class="col-sm-3">

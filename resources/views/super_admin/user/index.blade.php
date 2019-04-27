@@ -1,5 +1,5 @@
-@extends('super_admin.layouts.master', ['page' => $name]) 
-@section('title', $name) 
+@extends('super_admin.layouts.master', ['page' => $name])
+@section('title', $name)
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/jquery.dataTables.min.css') }}">
 <link rel="stylesheet" href="{{ asset('css/switchery.min.css') }}">
@@ -13,7 +13,7 @@
 		width: 100%;
 	}
 </style>
-@endpush 
+@endpush
 @section('contents')
 <div class="card">
 	<div class="card-header">
@@ -28,8 +28,7 @@
 					<tr>
 						<th class="d-none">ID</th>
 						<th>No</th>
-						<th>First Name</th>
-						<th>Last Name</th>
+						<th>Name</th>
 						<th>Email ID</th>
 						<th>Status</th>
 						<th>Action</th>
@@ -41,8 +40,8 @@
 </div>
 </div>
 
-@include('admin.user.changePassword') 
-@endsection 
+@include('admin.user.changePassword')
+@endsection
 @push('scripts')
 <script src="{{ asset('js/datatable.min.js') }}" type="text/javascript"></script>
 <script src="{{ asset('js/switchery.min.js') }}" type="text/javascript"></script>
@@ -77,13 +76,8 @@
 					searchable: false
 				},
 				{
-					data: 'first_name',
-					name: 'first_name',
-					sortable: false,
-				},
-				{
-					data: 'last_name',
-					name: 'last_name',
+					data: 'name',
+					name: 'name',
 					sortable: false,
 				},
 				{
@@ -96,10 +90,10 @@
 					name: 'active',
 					sortable: false,
 				},
-				{ 
-					data: 'action', 
-					name: 'action', 
-					sortable: false, 
+				{
+					data: 'action',
+					name: 'action',
+					sortable: false,
 				},
 			],
 		});

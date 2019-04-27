@@ -3,15 +3,17 @@
 namespace App;
 
 use Illuminate\Validation\Rule;
+use Laravel\Passport\HasApiTokens;
 use Illuminate\Database\Eloquent\Model;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\Activitylog\Traits\LogsActivity;
-use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\Activitylog\Traits\CausesActivity;
+use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
-class SubUser extends Model
+class SubUser extends Authenticatable
 {
-    use LogsActivity, CausesActivity;
+    use LogsActivity, CausesActivity, HasApiTokens;
 
 
     protected static $logFillable = true;
@@ -24,11 +26,12 @@ class SubUser extends Model
      * @var array
      */
     protected $fillable = [
-        'user_id', 
+        'user_id',
         'branch_id',
-        'name', 
-        'email', 
-        'password', 
+        'name',
+        'mobile',
+        'email',
+        'password',
         'active',
     ];
 
@@ -82,6 +85,7 @@ class SubUser extends Model
         return [
             'branch_id' => 'required',
             'name' => 'required|string|max:255',
+            'mobile' => 'required|numeric|'.$uniqueRule,
             'email' => 'required|string|email|max:255|'.$uniqueRule,
             'password' => 'sometimes|required|string|min:6|confirmed',
         ];

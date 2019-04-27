@@ -14,7 +14,7 @@ class CreateUserForeignKeyTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('admin_id')->unsigned()->after('id');
+            $table->unsignedBigInteger('admin_id')->unsigned()->after('id')->nullable();
             $table->foreign('admin_id')->references('id')->on('admins');
         });
     }

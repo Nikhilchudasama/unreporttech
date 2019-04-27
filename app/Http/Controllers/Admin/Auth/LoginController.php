@@ -40,6 +40,23 @@ class LoginController extends Controller
         return view('admin.auth.login');
     }
 
+     /**
+       * Get the needed authorization credentials from the request.
+       *
+       * @param  \Illuminate\Http\Request  $request
+       * @return array
+       */
+    //   protected function credentials(Request $request)
+    //   {
+    //     if(is_numeric($request->get('email'))){
+    //       return ['phone'=>$request->get('email'),'password'=>$request->get('password')];
+    //     }
+    //     elseif (filter_var($request->get('email'), FILTER_VALIDATE_EMAIL)) {
+    //       return ['email' => $request->get('email'), 'password'=>$request->get('password')];
+    //     }
+    //     // return ['username' => $request->get('email'), 'password'=>$request->get('password')];
+    //   }
+
     /**
      * Handle an authentication attempt.
      *
@@ -49,13 +66,20 @@ class LoginController extends Controller
      */
     public function login(Request $request)
     {
-        $credentials = $request->only('email', 'password');
+        if(is_numeric($request->get('email'))){
+            $credentials =  ['mobile'=>$request->get('email'),'password'=>$request->get('password')];
+          }
+          elseif (filter_var($request->get('email'), FILTER_VALIDATE_EMAIL)) {
+            $credentials =  ['email' => $request->get('email'), 'password'=>$request->get('password')];
+          }
+        // $credentials = $this->credentials;
+        // dd($credentials);
         $remember = request()->input('remember')?true:false;
-        
+
         if (Auth::attempt($credentials)) {
             return redirect()->intended('/admin/dashboard');
         }
-       
+
         return redirect('/admin')->withErrors([
             'email' => 'These credentials do not match our records.',
         ]);

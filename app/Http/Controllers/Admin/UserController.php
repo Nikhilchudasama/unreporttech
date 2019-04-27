@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\SuperAdmin;
+namespace App\Http\Controllers\Admin;
 
 use Auth;
 use App\User;
@@ -21,7 +21,7 @@ class UserController extends Controller
     public function index()
     {
         $name = "User";
-        return view('super_admin.user.index', compact('name'));
+        return view('admin.user.index', compact('name'));
     }
 
     /**
@@ -31,7 +31,8 @@ class UserController extends Controller
      */
     public function create()
     {
-        return view('super_admin.user.add');
+        $branches = Branch::where('user_id', Auth::user()->id)->get();
+        return view('admin.user.add', compact('branches'));
     }
 
     /**
@@ -42,24 +43,11 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = request()->validate(User::validationRules());
+        $validatedData = request()->validate(User::validationRulesForSubUser());
         $validatedData['password'] = bcrypt($validatedData['password']);
         $validatedData['active'] = CommonFunctions::checkedCheckbox(request()->input('active'));
-        $validatedData['admin_id'] = Auth::guard('admin')->user()->id;
-        $validatedData['is_admin'] = 1;
+        $validatedData['user_id'] = Auth::user()->id;
         $user = User::create($validatedData);
-        $branchData = [
-            'user_id' => $user->id,
-            'name' => $user->name,
-            'address' => ''
-        ];
-        $branch = Branch::create($branchData);
-        $setting = [
-            'user_id' => $user->id,
-        ];
-        $user->branch_id = $branch->id;
-        $user->save();
-        Setting::create($setting);
         return $this->respond('Record added',$user);
     }
 
@@ -74,7 +62,7 @@ class UserController extends Controller
         ini_set('max_execution_time', 300); //300 seconds = 5 minutes
 
         $query = User::query();
-        $query->where('is_admin', 1);
+        $query->where('is_admin', 0)->where('user_id', Auth::user()->id);
         return DataTables::of($query)
         ->addColumn('active', function ($user) {
             return $user->getStatus();
@@ -82,9 +70,9 @@ class UserController extends Controller
 
         ->addColumn('action', function ($user) {
             $html = '';
-            if ($user->deleted_at == null) {
-                $html .= '<a href="javascript:void(0)" data-url="'.route('super_admin.user.edit', ['user' => $user->id]) .'" class="btn waves-effect waves-light btn-warning btn-icon edit-form-button"><i class="icofont icofont-pen-alt-4"></i></a>   <a href="javascript:void(0)" data-url="' . route('super_admin.user.destroy', ['user' => $user->id]) . '" class="btn waves-effect waves-light btn-danger btn-icon delete-button"><i class="icofont icofont-trash"></i></a>  <a href="javascript:void(0)" data-url="' . route('super_admin.user.change-password', ['user' => $user->id]) . '" class="btn waves-effect waves-light btn-info btn-icon change-password"><i class="icofont icofont-key"></i></a>';
-            }
+            $html = '';
+            $html .= '<a href="javascript:void(0)" data-url="'.route('admin.user.edit', ['user' => $user->id]) .'" class="btn waves-effect waves-light btn-warning btn-icon edit-form-button"><i class="icofont icofont-pen-alt-4"></i></a>   <a href="javascript:void(0)" data-url="' . route('admin.user.change-password', ['user' => $user->id]) . '" class="btn waves-effect waves-light btn-info btn-icon change-password"><i class="icofont icofont-key"></i></a>';
+            // $html .='<a href="javascript:void(0)" data-url="' . route('admin.user.destroy', ['user' => $user->id]) . '" class="btn waves-effect waves-light btn-danger btn-icon delete-button"><i class="icofont icofont-trash"></i></a>  ';
             return $html;
         })
         ->addIndexColumn()
@@ -99,7 +87,8 @@ class UserController extends Controller
      */
     public function edit(User $user)
     {
-        return view('super_admin.user.edit', compact('user'));
+        $branches = Branch::where('user_id', Auth::user()->id)->get();
+        return view('admin.user.edit', compact('branches','user'));
     }
 
     /**
@@ -111,7 +100,7 @@ class UserController extends Controller
      */
     public function update(Request $request, User $user)
     {
-        $validatedData = request()->validate(User::validationRules($user->id));
+        $validatedData = request()->validate(User::validationRulesForSubUser($user->id));
         $validatedData['active'] = CommonFunctions::checkedCheckbox(request()->input('active'));
         $user->update($validatedData);
         return $this->respond('Record updated',$user);
@@ -125,8 +114,8 @@ class UserController extends Controller
      */
     public function destroy(User $user)
     {
-        $user->branch()->delete();
-        $user->delete();
+        // $user->branch()->delete();
+        // $user->delete();
     }
 
     /**

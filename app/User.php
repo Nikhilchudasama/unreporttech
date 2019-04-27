@@ -27,7 +27,7 @@ class User extends Authenticatable implements HasMedia
      * @var array
      */
     protected $fillable = [
-        'email', 'password', 'first_name', 'last_name', 'active', 'admin_id'
+        'email', 'password', 'name', 'active', 'admin_id', 'mobile', 'is_admin', 'branch_id', 'user_id'
     ];
 
     /**
@@ -36,7 +36,7 @@ class User extends Authenticatable implements HasMedia
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token',
+        'password', 'remember_token','admin_id'
     ];
 
     /**
@@ -63,8 +63,30 @@ class User extends Authenticatable implements HasMedia
             $uniqueRule->ignore($id);
         }
         return [
-            'first_name' => 'required|string|max:255',
-            'last_name' => 'required|string|max:255',
+            'name' => 'required|string|max:255',
+            'mobile' => 'required|numeric|'.$uniqueRule,
+            'email' => 'required|string|email|max:255|'.$uniqueRule,
+            'password' => 'sometimes|required|string|min:6|confirmed',
+        ];
+    }
+
+    /**
+     * Sub User Validation rules
+     *
+     * @return array validation rules
+     **/
+
+    public static function validationRulesForSubUser($id = null)
+    {
+        $uniqueRule = Rule::unique('users');
+
+        if ($id) {
+            $uniqueRule->ignore($id);
+        }
+        return [
+            'branch_id' => 'required',
+            'name' => 'required|string|max:255',
+            'mobile' => 'required|numeric|'.$uniqueRule,
             'email' => 'required|string|email|max:255|'.$uniqueRule,
             'password' => 'sometimes|required|string|min:6|confirmed',
         ];
@@ -113,6 +135,14 @@ class User extends Authenticatable implements HasMedia
     public function subuser()
     {
         return $this->hasMany('App\SubUser');
+    }
+
+    /**
+     * Get the User branch
+     */
+
+    public function userBranch(){
+        return $this->belongsTo('App\Branch','branch_id', 'id');
     }
 
     /**
@@ -167,6 +197,24 @@ class User extends Authenticatable implements HasMedia
     public function setting()
     {
         return $this->hasOne('App\Setting');
+    }
+
+    /**
+     * User list
+     *
+     * @param int $id user id
+     * @return mixed|array
+     **/
+    public static function userList($id, $offset, $search)
+    {
+        $result = static::query();
+        $result->where('user_id', $id);
+        if(!empty($search)){
+        $result->where('name', 'LIKE', '%'.$search.'%');
+        }
+        return $result->orderBy('created_at', 'desc')
+                ->skip($offset*20)->take(20)
+                ->get();
     }
 
 }

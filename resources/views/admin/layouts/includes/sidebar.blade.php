@@ -26,7 +26,7 @@
                 </a>
             </li>
             <li {{ $page == 'User' ? ' class=active' : '' }}>
-                <a href="{{ route('admin.subUser.index') }}" class="waves-effect waves-dark">
+                <a href="{{ route('admin.user.index') }}" class="waves-effect waves-dark">
                     <span class="pcoded-micon">
                         <i class="feather icon-users"></i>
                     </span>

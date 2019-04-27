@@ -23,7 +23,7 @@ class Branch extends Model
     protected $fillable = [
         'name', 'user_id','address'
     ];
-    
+
     /**
      * Get the sub-users for brnch.
      */
@@ -52,5 +52,23 @@ class Branch extends Model
             'name' => 'required|string|max:255',
             'address' => 'required|string',
         ];
+    }
+
+    /**
+     * User list
+     *
+     * @param int $id user id
+     * @return mixed|array
+     **/
+    public static function branch($id, $offset, $search)
+    {
+        $result = static::query();
+        $result->where('user_id', $id);
+        if(!empty($search)){
+        $result->where('name', 'LIKE', '%'.$search.'%');
+        }
+        return $result->orderBy('created_at', 'desc')
+                ->skip($offset*20)->take(20)
+                ->get();
     }
 }

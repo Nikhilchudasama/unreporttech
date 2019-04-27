@@ -29,11 +29,11 @@
             @endif
 
             <div class="form-group form-primary">
-                <input id="email" type="email" class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required>
+                <input id="email" type="text" class="form-control {{ $errors->has('email') ? ' is-invalid' : '' }}" name="email" value="{{ old('email') }}" required>
 
                 <span class="form-bar"></span>
 
-                <label for="email" class="float-label">E-Mail Address</label>
+                <label for="email" class="float-label">E-Mail Or Mobile No</label>
             </div>
 
             <div class="form-group form-primary">

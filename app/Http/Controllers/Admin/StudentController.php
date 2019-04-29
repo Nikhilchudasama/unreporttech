@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use Auth;
 use App\Branch;
 use App\Student;
+use App\StudentLogInfo;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Yajra\DataTables\Facades\DataTables;
@@ -29,7 +30,11 @@ class StudentController extends Controller
      */
     public function create()
     {
-        $branches = Branch::where('user_id', Auth::user()->id)->get();
+        if (Auth::user()->is_admin) {
+            $branches = Branch::where('user_id', Auth::user()->id)->get();
+        }else{
+            $branches = Branch::where('user_id', Auth::user()->user_id)->get();
+        }
         return view('admin.student.add', compact('branches'));
     }
 
@@ -41,13 +46,21 @@ class StudentController extends Controller
      */
     public function store(Request $request)
     {
-        if(Auth::user()->setting->academic_year_id == null){
+        if(Auth::user()->is_admin && Auth::user()->setting->academic_year_id == null){
             return $this->respondWithFailure('Select Academic Year In Setting', [], true, 200);
+        }
+        if(!Auth::user()->is_admin && Auth::user()->checkAY() == null){
+            return $this->respondWithFailure('Contact Admin and Select Academic Year', [], true, 200);
         }
         $validatedData = request()->validate(Student::validationRules());
         $validatedData['user_id'] = Auth::user()->id;
         unset($validatedData['student_image']);
         $student = Student::create($validatedData);
+        $slInfo = [
+            'student_id' => $student->id,
+            'academic_year_id' => Auth::user()->checkAY()->academic_year_id,
+            ];
+        StudentLogInfo::create($slInfo);
         $student->addMediaFromRequest('student_image')->toMediaCollection('student_image');
         return $this->respond('Record added',$student);
     }
@@ -73,7 +86,7 @@ class StudentController extends Controller
         })
         ->addColumn('action', function ($student) {
             $html = '';
-            $html .= '<a href="javascript:void(0)" data-url="'.route('admin.student.edit', ['student' => $student->id]) .'" class="btn waves-effect waves-light btn-warning btn-icon edit-form-button"><i class="icofont icofont-pen-alt-4"></i></a>';   
+            $html .= '<a href="javascript:void(0)" data-url="'.route('admin.student.edit', ['student' => $student->id]) .'" class="btn waves-effect waves-light btn-warning btn-icon edit-form-button"><i class="icofont icofont-pen-alt-4"></i></a>';
             //$html .= '<a href="javascript:void(0)" data-url="' . route('admin.student.destroy', ['student' => $student->id]) . '" class="btn waves-effect waves-light btn-danger btn-icon delete-button"><i class="icofont icofont-trash"></i></a>';
             return $html;
         })

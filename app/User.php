@@ -217,4 +217,16 @@ class User extends Authenticatable implements HasMedia
                 ->get();
     }
 
+    /**
+     * If user is normal than check academic year selected or not
+     *
+     * @return boolen
+     **/
+    public function checkAY()
+    {
+        return Static::select('settings.academic_year_id')
+                        ->join('settings', 'users.user_id','=','settings.user_id')
+                        ->where('academic_year_id', '<>', '')->first();
+    }
+
 }

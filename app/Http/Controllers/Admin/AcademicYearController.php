@@ -43,6 +43,9 @@ class AcademicYearController extends Controller
         $validatedData = request()->validate(AcademicYear::validationRules());
         $validatedData['user_id'] = Auth::user()->id;
         $validatedData['status'] = CommonFunctions::checkedCheckbox(request()->input('status'));
+        if(request()->input('status')){
+            $query = AcademicYear::where('user_id', Auth::user()->id)->update(['status' => 0]);
+        }
         $academicYear = AcademicYear::create($validatedData);
         return $this->respond('Record added',$academicYear);
     }
@@ -60,7 +63,7 @@ class AcademicYearController extends Controller
         return DataTables::of($query)
         ->addColumn('action', function ($academicYear) {
             $html = '';
-            $html .= '<a href="javascript:void(0)" data-url="'.route('admin.academicYear.edit', ['academicYear' => $academicYear->id]) .'" class="btn waves-effect waves-light btn-warning btn-icon edit-form-button"><i class="icofont icofont-pen-alt-4"></i></a>';   
+            $html .= '<a href="javascript:void(0)" data-url="'.route('admin.academicYear.edit', ['academicYear' => $academicYear->id]) .'" class="btn waves-effect waves-light btn-warning btn-icon edit-form-button"><i class="icofont icofont-pen-alt-4"></i></a>';
             //$html .= '<a href="javascript:void(0)" data-url="' . route('admin.academicYear.destroy', ['academicYear' => $academicYear->id]) . '" class="btn waves-effect waves-light btn-danger btn-icon delete-button"><i class="icofont icofont-trash"></i></a>';
             return $html;
         })
@@ -90,6 +93,9 @@ class AcademicYearController extends Controller
     {
         $validatedData = request()->validate(AcademicYear::validationRules());
         $validatedData['status'] = CommonFunctions::checkedCheckbox(request()->input('status'));
+        if(request()->input('status')){
+            $query = AcademicYear::where('user_id', Auth::user()->id)->update(['status' => 0]);
+        }
         $academicYear->update($validatedData);
         return $this->respond('Record updated',$academicYear);
     }

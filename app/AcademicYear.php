@@ -58,4 +58,24 @@ class AcademicYear extends Model
     {
         return $this->belongsTo('App\User');
     }
+
+    /**
+     * Academic Year list
+     *
+     * @param int $id user id
+     * @param int $offset pagination offset
+     * @param string $search search string
+     * @return mixed|array
+     **/
+    public static function ayList($id, $offset, $search)
+    {
+        $result = static::query();
+        $result->where('user_id', $id);
+        if(!empty($search)){
+        $result->where('title', 'LIKE', '%'.$search.'%');
+        }
+        return $result->orderBy('created_at', 'desc')
+                ->skip($offset*20)->take(20)
+                ->get();
+    }
 }

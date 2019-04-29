@@ -9,6 +9,7 @@
                     <span class="pcoded-mtext">Dashboard </span>
                 </a>
             </li>
+            @if(Auth::user()->is_admin)
             <li {{ $page == 'Branch' ? ' class=active' : '' }}>
                 <a href="{{ route('admin.branch.index') }}" class="waves-effect waves-dark">
                     <span class="pcoded-micon">
@@ -33,14 +34,6 @@
                     <span class="pcoded-mtext">User </span>
                 </a>
             </li>
-            <li {{ $page == 'Student' ? ' class=active' : '' }}>
-                <a href="{{ route('admin.student.index') }}" class="waves-effect waves-dark">
-                    <span class="pcoded-micon">
-                        <i class="icofont icofont-group-students"></i>
-                    </span>
-                    <span class="pcoded-mtext">Student </span>
-                </a>
-            </li>
             <li {{ $page == 'Academic Year' ? ' class=active' : '' }}>
                 <a href="{{ route('admin.academicYear.index') }}" class="waves-effect waves-dark">
                     <span class="pcoded-micon">
@@ -55,6 +48,15 @@
                         <i class="icofont icofont-settings"></i>
                     </span>
                     <span class="pcoded-mtext">Setting </span>
+                </a>
+            </li>
+            @endif
+            <li {{ $page == 'Student' ? ' class=active' : '' }}>
+                <a href="{{ route('admin.student.index') }}" class="waves-effect waves-dark">
+                    <span class="pcoded-micon">
+                        <i class="icofont icofont-group-students"></i>
+                    </span>
+                    <span class="pcoded-mtext">Student </span>
                 </a>
             </li>
         </ul>

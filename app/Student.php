@@ -56,7 +56,7 @@ class Student extends Model implements HasMedia
         ];
     }
 
-    
+
     /**
     * Bootstrap any application services.
     */
@@ -116,5 +116,27 @@ class Student extends Model implements HasMedia
     public function branch()
     {
         return $this->belongsTo('App\Branch');
+    }
+
+    /**
+     * Student list
+     *
+     * @param int $id user id
+     * @param int $offset pagination offset
+     * @param string $search search string
+     * @return mixed|array
+     **/
+    public static function studentList($id, $offset, $search)
+    {
+        $result = static::query();
+        $result->where('user_id', $id);
+        if(!empty($search)){
+        $result->where('first_name', 'LIKE', '%'.$search.'%')
+                ->where('last_name', 'LIKE', '%'.$search.'%')
+                ->where('middle_name', 'LIKE', '%'.$search.'%');
+        }
+        return $result->orderBy('created_at', 'desc')
+                ->skip($offset*20)->take(20)
+                ->get();
     }
 }

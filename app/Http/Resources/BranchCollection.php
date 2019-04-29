@@ -18,6 +18,7 @@ class BranchCollection extends ResourceCollection
             $data = [
                 'id' => $branch->id,
                 'name' => $branch->name,
+                'address' =>  $branch->address?:''
             ];
             return $data;
         });

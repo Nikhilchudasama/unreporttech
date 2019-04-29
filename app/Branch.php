@@ -55,12 +55,14 @@ class Branch extends Model
     }
 
     /**
-     * User list
+     * Branch list
      *
      * @param int $id user id
+     * @param int $offset pagination offset
+     * @param string $search search string
      * @return mixed|array
      **/
-    public static function branch($id, $offset, $search)
+    public static function branchList($id, $offset, $search)
     {
         $result = static::query();
         $result->where('user_id', $id);

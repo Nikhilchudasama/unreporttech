@@ -6,11 +6,13 @@ use DB;
 use Hash;
 use App\User;
 use Validator;
+use App\CommonFunctions;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Resources\UserResource;
 use App\Http\Resources\UserCollection;
 use App\Http\Resources\BranchCollection;
+use App\Http\Resources\UserEditResource;
 
 class UserController extends ApiController
 {
@@ -55,7 +57,8 @@ class UserController extends ApiController
      *
      * @return mixed|array
     */
-    public function branchList(Request $request){
+    public function branchList(Request $request)
+    {
         if($this->checkHeader() == null){
             $branch = new BranchCollection(request()->user()->branch);
             return $this->respondApi('Branch List', ['branch' => $branch]);
@@ -152,8 +155,30 @@ class UserController extends ApiController
                 $validatedData = request()->all();
                 $validatedData['password'] = bcrypt($validatedData['password']);
                 $validatedData['user_id'] = request()->user()->id;
+                $validatedData['active'] = CommonFunctions::checkedCheckbox(request()->input('active'));
                 $user = User::create($validatedData);
                 return $this->respondApi('User created');
+            }else{
+                $this->statusCode= 403;
+                return $this->respondWithFailureApi('Forbidden');
+            }
+        }else{
+            return $this->respondWithFailureApi($this->checkHeader(), [], false, 401);
+        }
+    }
+
+    /**
+     * Edit User
+     *
+     * @param int $id User Id
+     * @return mixed|array
+     **/
+    public function editUser(Request $request)
+    {
+        if($this->checkHeader() == null){
+            if(request()->user()->is_admin){
+                $editUser = User::find(request()->input('id'));
+                return $this->respondApi('User edit', new UserEditResource($editUser));
             }else{
                 $this->statusCode= 403;
                 return $this->respondWithFailureApi('Forbidden');
@@ -184,8 +209,8 @@ class UserController extends ApiController
                     return $this->respondWithFailureApi('Validation Error', $validate->errors());
                 }
                 $validatedData = request()->all();
-                unset($validatedData['uid']);
-                $user = User::where('id', request()->input('uid'))->update($validatedData);
+                unset($validatedData['id']);
+                $user = User::where('id', request()->input('id'))->update($validatedData);
                 return $this->respondApi('User updated');
             }else{
                 $this->statusCode= 403;

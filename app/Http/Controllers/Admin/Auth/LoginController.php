@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Auth;
 
+use validate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\Controller;
@@ -72,12 +73,21 @@ class LoginController extends Controller
           elseif (filter_var($request->get('email'), FILTER_VALIDATE_EMAIL)) {
             $credentials =  ['email' => $request->get('email'), 'password'=>$request->get('password')];
           }
-        // $credentials = $this->credentials;
-        // dd($credentials);
         $remember = request()->input('remember')?true:false;
 
-        if (Auth::attempt($credentials)) {
-            return redirect()->intended('/admin/dashboard');
+        // if (Auth::attempt($credentials)) {
+        //     return redirect()->intended('/admin/dashboard');
+        // }
+        if (Auth::validate($credentials)) {
+            $now = time();
+            $user = Auth::getLastAttempted();
+            if(!$user->active){
+                return redirect('/admin')->withErrors([
+                    'email' => 'Your Account Deactive.',
+                ]);
+            }
+            Auth::login($user, $remember);
+            return redirect()->intended($this->redirectPath());
         }
 
         return redirect('/admin')->withErrors([

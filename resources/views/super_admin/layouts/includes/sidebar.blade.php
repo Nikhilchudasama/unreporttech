@@ -17,6 +17,14 @@
                     <span class="pcoded-mtext">User </span>
                 </a>
             </li>
+            <li {{ $page == 'AppVersion' ? ' class=active' : '' }}>
+                <a href="{{ route('super_admin.appversion.index') }}" class="waves-effect waves-dark">
+                    <span class="pcoded-micon">
+                        <i class="feather icon-settings"></i>
+                    </span>
+                    <span class="pcoded-mtext">App Version </span>
+                </a>
+            </li>
         </ul>
     </div>
 </nav>

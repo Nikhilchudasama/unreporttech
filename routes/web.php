@@ -69,6 +69,10 @@ Route::name('super_admin.')->namespace('SuperAdmin')->prefix('super-admin')->gro
         Route::get('user/userdata', 'UserController@show')->name('user.userdata');
         Route::post('/user/change-password', 'UserController@changePassword')->name('user.change-password');
 
+        // App Version Setting
+        Route::resource('appversion', 'AppVersionController');
+        Route::get('appversion/userdata', 'AppVersionController@show')->name('appversion.userdata');
+
         // logout user
         Route::post('/logout', 'Auth\LoginController@logout')->name('logout');
     });

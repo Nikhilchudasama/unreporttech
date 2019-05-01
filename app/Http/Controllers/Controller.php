@@ -19,9 +19,9 @@ class Controller extends BaseController
      * @param int $statusCode
      * @return json
     */
-    protected function respondWithFailure($message, $data = [], $statusCode = 401)
+    protected function respondWithFailure($message, $data = [], $header = true, $statusCode = 401)
     {
-        return $this->respond($message, $data, false, $statusCode);
+        return $this->respond($message, $data, false, $header, $statusCode);
     }
 
     /**
@@ -33,12 +33,13 @@ class Controller extends BaseController
      * @param int $statusCode
      * @return json
      */
-    protected function respond($message, $data = [], $status = true, $statusCode = 200)
+    protected function respond($message, $data = [], $status = true, $header = true, $statusCode = 200)
     {
         $data = $data ?: null;
 
         if($data){
             return response()->json([
+                'header' => $header,
                 'status' => $status,
                 'message' => $message,
                 'statusCode' => $statusCode,
@@ -46,6 +47,7 @@ class Controller extends BaseController
             ],$statusCode);
         }else{
             return response()->json([
+                'header' => $header,
                 'status' => $status,
                 'message' => $message,
                 'statusCode' => $statusCode,

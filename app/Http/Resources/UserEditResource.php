@@ -22,6 +22,7 @@ class UserEditResource extends JsonResource
             'active' => $this->active?true:false,
             'branch_id' => $this->branch_id,
             'branch_name' => $this->userBranch->name,
+            'profile_img' => $this->getFirstMediaUrl('profile_img')?:asset('images/avatar.png'),
         ];
         return $data;
     }

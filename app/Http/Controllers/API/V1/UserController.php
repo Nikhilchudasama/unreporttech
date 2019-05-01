@@ -147,16 +147,21 @@ class UserController extends ApiController
                     'name' => 'required|string|max:255',
                     'mobile' => 'required|numeric|unique:users',
                     'password' => 'required|string|min:6',
+                    'profile_img' => 'sometimes|mimes:jpeg,jpg,png,gif|required|max:10000',
                 ]);
                 if ($validate->fails()) {
                     $this->statusCode = 422;
                     return $this->respondWithFailureApi('Validation error', $validate->errors());
                 }
                 $validatedData = request()->all();
+                unset($validatedData['profile_img']);
                 $validatedData['password'] = bcrypt($validatedData['password']);
                 $validatedData['user_id'] = request()->user()->id;
                 $validatedData['active'] = CommonFunctions::checkedCheckbox(request()->input('active'));
                 $user = User::create($validatedData);
+                if(request()->has('profile_img')){
+                    $user->addMediaFromRequest('profile_img')->toMediaCollection('profile_img');
+                }
                 return $this->respondApi('User created');
             }else{
                 $this->statusCode= 403;
@@ -202,6 +207,7 @@ class UserController extends ApiController
                 $validate = Validator::make($request->all(), [
                     'branch_id' => 'required',
                     'name' => 'required|string|max:255',
+                    'profile_img' => 'sometimes|mimes:jpeg,jpg,png,gif|required|max:10000',
                 ]);
 
                 if ($validate->fails()) {
@@ -210,7 +216,11 @@ class UserController extends ApiController
                 }
                 $validatedData = request()->all();
                 unset($validatedData['id']);
-                $user = User::where('id', request()->input('id'))->update($validatedData);
+                $user = User::find(request()->input('id'));
+                $user->update($validatedData);
+                if (request()->has('profile_img')) {
+                    $user->addMediaFromRequest('profile_img')->toMediaCollection('profile_img');
+                }
                 return $this->respondApi('User updated');
             }else{
                 $this->statusCode= 403;

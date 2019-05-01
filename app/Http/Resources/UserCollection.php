@@ -22,6 +22,7 @@ class UserCollection extends ResourceCollection
                 'active' => $users->active?true:false,
                 'branch_id' => $users->branch_id,
                 'branch_name' => $users->userBranch->name,
+                'profile_img' => $users->getFirstMediaUrl('profile_img')?:asset('images/avatar.png'),
             ];
             return $data;
         });

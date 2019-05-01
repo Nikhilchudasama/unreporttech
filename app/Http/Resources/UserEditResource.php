@@ -17,7 +17,6 @@ class UserEditResource extends JsonResource
         $data = [
             'id' => $this->id,
             'name' => $this->name,
-            'email' => $this->email,
             'mobile' => $this->mobile,
             'active' => $this->active?true:false,
             'branch_id' => $this->branch_id,

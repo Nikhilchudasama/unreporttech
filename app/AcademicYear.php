@@ -15,7 +15,7 @@ class AcademicYear extends Model
 
     protected static $logOnlyDirty = true;
 
-    protected  $dates = ['start_date', 'end_date'];
+    protected  $dates = ['start_date'=>'datetimes:Y-m-d', 'end_date' => 'datetimes:Y-m-d'];
 
     /**
      * The attributes that are mass assignable.

@@ -15,14 +15,14 @@
             </div>
             <div class="col-sm-3">
                 <div class="form-group form-default">
-                    <input type="text" name="start_date" class="form-control datepicker1" value="{{ $academicYear->start_date }}" required>
+                    <input type="text" name="start_date" class="form-control start-datepicker" value="{{ $academicYear->start_date }}" required>
                     <span class="form-bar"></span>
                     <label class="float-label">Start Date</label>
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="form-group form-default">
-                    <input type="text" name="end_date" class="form-control datepicker1" value="{{ $academicYear->end_date }}" required>
+                    <input type="text" name="end_date" class="form-control end-datepicker" value="{{ $academicYear->end_date }}" required>
                     <span class="form-bar"></span>
                     <label class="float-label">End Date</label>
                 </div>
@@ -40,12 +40,6 @@
 
             elem.forEach(function(html) {
                 var switchery = new Switchery(html, { color: '#4099ff', jackColor: '#fff' });
-            });
-            $('.datepicker1').datepicker({
-                format: 'yyyy-mm-dd',
-                autoclose: true,
-            }).on('change', function(){
-                updateFormInput();
             });
         });
     </script>

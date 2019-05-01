@@ -12,6 +12,7 @@
 			axios.get(url)
 				.then(function(response) {
 					setupModelDetails('Add @yield("title")', response.data);
+					focusInput();
 					updateFormInput();
 				})
 				.catch(function(error) {
@@ -26,6 +27,7 @@
 		axios.get(url)
 		.then(function (response) {
 			setupModelDetails('Edit @yield("title")', response.data);
+			focusInput();
 			updateFormInput();
 		})
 		.catch(function (error) {
@@ -156,6 +158,7 @@
         $('#error-messages').scrollTop();
         $('#common-popup').animate({ scrollTop: 0 }, 'slow');
     }
+
 	function errorMessage(message){
 		var errorMessages = '<ul>';
 		errorMessages += '<li>' + message + '</li>';
@@ -170,4 +173,34 @@
 		var table = $('#users-table').DataTable();
 		table.ajax.reload();
 	}
+
+	function focusInput(){
+		$('.datepicker').datepicker({
+			format: 'yyyy-mm-dd',
+			startDate: new Date(),
+			autoclose: true,
+		});
+		$(".start-datepicker").datepicker({
+			format: 'yyyy-mm-dd',
+			startDate: new Date(),
+			autoclose: true,
+		}).on('changeDate', function(selected) {
+			var startDate = new Date(selected.date.valueOf());
+			updateFormInput();
+			$('.end-datepicker').datepicker('setStartDate', startDate);
+		}).on('clearDate', function(selected) {
+			$('.end-datepicker').datepicker('setStartDate', null);
+		});
+		$(".end-datepicker").datepicker({
+			format: 'yyyy-mm-dd',
+			startDate: new Date(),
+			autoclose: true,
+		}).on('changeDate', function(selected) {
+			var endDate = new Date(selected.date.valueOf());
+			updateFormInput();
+			$('.start-datepicker').datepicker('setEndDate', endDate);
+		}).on('clearDate', function(selected) {
+			$('.start-datepicker').datepicker('setEndDate', null);
+		});
+    }
 </script>

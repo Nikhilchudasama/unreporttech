@@ -14,14 +14,14 @@
                 </div>
                 <div class="col-sm-3">
                     <div class="form-group form-default">
-                        <input type="text" name="start_date" class="form-control datepicker1" required>
+                        <input type="text" name="start_date" class="form-control start-datepicker" required>
                         <span class="form-bar"></span>
                         <label class="float-label">Start Date</label>
                     </div>
                 </div>
                 <div class="col-sm-3">
                     <div class="form-group form-default">
-                        <input type="text" name="end_date" class="form-control datepicker1" required>
+                        <input type="text" name="end_date" class="form-control end-datepicker" required>
                         <span class="form-bar"></span>
                         <label class="float-label">End Date</label>
                     </div>
@@ -54,12 +54,6 @@
 				color: '#4099ff',
 				jackColor: '#fff'
 			});
-        });
-        $('.datepicker1').datepicker({
-                format: 'yyyy-mm-dd',
-            autoclose: true,
-        }).on('change', function(){
-            updateFormInput();
         });
         </script>
         @include('admin.layouts.includes.common_popup_footer')

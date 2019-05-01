@@ -11,7 +11,7 @@
                     <select name="academic_year_id" id="academic_year_id" class="form-control form-default" required>
                         <option value="">Select Year</option>
                         @foreach($academicYears as $academicYear)
-                        <option value="{{ $academicYear->id }}" {{ $setting->academic_year_id == $academicYear->id?'selected':''  }}>{{ $academicYear->title.' '.$academicYear->start_date->format('d-M-Y').' to '.$academicYear->end_date->format('d-M-Y') }}</option>
+                        <option value="{{ $academicYear->id }}" {{ $setting->academic_year_id == $academicYear->id?'selected':''  }}>{{ $academicYear->title.' '.date('d-M-Y', strtotime($academicYear->start_date)).' to '.date('d-M-Y', strtotime($academicYear->end_date)) }}</option>
                         @endforeach
                     </select>
                 </div>

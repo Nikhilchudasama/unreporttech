@@ -1,6 +1,6 @@
 
-@extends('admin.layouts.master', ['page' => $name]) 
-@section('title', $name) 
+@extends('admin.layouts.master', ['page' => $name])
+@section('title', $name)
 @section('contents')
 <div class="card">
     <div class="card-header">
@@ -23,7 +23,7 @@
                                                 <th scope="row">Academic Year</th>
                                                 <td>
                                                 @if($setting->academic_year_id != null)
-                                                {{ $setting->academicYear->title.' '.$setting->academicYear->start_date->format('d-M-Y').' to '.$setting->academicYear->end_date->format('d-M-Y') }}
+                                                {{ $setting->academicYear->title.' '.date('d-M-Y', strtotime($setting->academicYear->start_date)).' to '.date('d-M-Y', strtotime($setting->academicYear->end_date)) }}
                                                 @endif
                                                 </td>
                                             </tr>
@@ -68,4 +68,3 @@
 </div>
 
 @endsection
-

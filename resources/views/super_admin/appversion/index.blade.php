@@ -56,6 +56,7 @@
 			processing: true,
 			serverSide: true,
 			bPaginate: false,
+			info: false,
 			bFilter: false,
 			oLanguage: {
 				"sSearch": ""

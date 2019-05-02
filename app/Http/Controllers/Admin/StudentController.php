@@ -47,10 +47,10 @@ class StudentController extends Controller
     public function store(Request $request)
     {
         if(Auth::user()->is_admin && Auth::user()->setting->academic_year_id == null){
-            return $this->respondWithFailure('Select Academic Year In Setting', [], true, 200);
+            return $this->respondWithFailure('Select Academic Year In Setting', [], 200);
         }
         if(!Auth::user()->is_admin && Auth::user()->checkAY() == null){
-            return $this->respondWithFailure('Contact Admin and Select Academic Year', [], true, 200);
+            return $this->respondWithFailure('Contact Admin and Select Academic Year', [], 200);
         }
         $validatedData = request()->validate(Student::validationRules());
         $validatedData['user_id'] = Auth::user()->id;

@@ -19,7 +19,7 @@ class ApiController extends Controller
     */
     protected function respondWithFailureApi($message, $data = [], $header = true)
     {
-        return $this->respond($message, $data, false, $header, $this->statusCode);
+        return $this->respondApi($message, $data, false, $header, $this->statusCode);
     }
 
     /**

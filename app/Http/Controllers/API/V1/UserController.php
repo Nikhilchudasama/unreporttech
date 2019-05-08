@@ -97,7 +97,7 @@ class UserController extends ApiController
      **/
     public function updatePassword(Request $request)
     {
-        if($this->checkHeader == null){
+        if($this->checkHeader() == null){
             $password = bcrypt(request()->input('password'));
             $user = User::where('mobile', request()->input('mobile'))->update(['password' =>  $password]);
             if($user){

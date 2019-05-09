@@ -1,5 +1,5 @@
-@extends('admin.layouts.master', ['page' => $name]) 
-@section('title', $name) 
+@extends('admin.layouts.master', ['page' => $name])
+@section('title', $name)
 @push('styles')
 <link rel="stylesheet" href="{{ asset('css/jquery.dataTables.min.css') }}">
 <link rel="stylesheet" href="{{ asset('css/switchery.min.css') }}">
@@ -13,7 +13,7 @@
 		width: 100%;
 	}
 </style>
-@endpush 
+@endpush
 @section('contents')
 <div class="card">
 	<div class="card-header">
@@ -31,6 +31,7 @@
 						<th>Image</th>
 						<th>Full Name</th>
 						<th>Mobile No</th>
+						<th>Payable Fee</th>
 						<th>Action</th>
 					</tr>
 				</thead>
@@ -40,7 +41,7 @@
 </div>
 </div>
 
-@endsection 
+@endsection
 @push('scripts')
 <script src="{{ asset('js/datatable.min.js') }}" type="text/javascript"></script>
 <script src="{{ asset('js/switchery.min.js') }}" type="text/javascript"></script>
@@ -75,7 +76,7 @@
 					searchable: false
 				},
 				// { data: 'image', name: 'image',  sortable: false,
-                   
+
                 // },
 				{ data: 'image', name: 'image',  sortable: false,
                     render: function( data, type, full, meta ) {
@@ -92,10 +93,15 @@
 					name: 'mobile_no',
 					sortable: false,
 				},
-				{ 
-					data: 'action', 
-					name: 'action', 
-					sortable: false, 
+				{
+					data: 'unpaid_fee',
+					name: 'unpaid_fee',
+					sortable: false,
+				},
+				{
+					data: 'action',
+					name: 'action',
+					sortable: false,
 				},
 			],
 		});

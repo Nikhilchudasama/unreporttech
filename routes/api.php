@@ -70,5 +70,10 @@ Route::namespace('V1')->prefix('V1')->group(function(){
         Route::post('/editFO', 'FeeOfferController@editFO');
         // Update Fee Offer
         Route::post('/updateFO', 'FeeOfferController@updateFO');
+
+        // Student Fee Details
+        Route::post('/feeDetails', 'StudentFeeController@feeDetails');
+        // Student Fee Add
+        Route::post('/feeAdd', 'StudentFeeController@feeAdd');
     });
 });

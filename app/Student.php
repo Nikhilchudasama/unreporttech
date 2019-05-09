@@ -31,6 +31,10 @@ class Student extends Model implements HasMedia
         'middle_name',
         'mobile_no',
         'finger',
+        'fee_offers_id',
+        'total_fee',
+        'unpaid_fee',
+        'discount',
     ];
 
     /**
@@ -116,6 +120,22 @@ class Student extends Model implements HasMedia
     public function branch()
     {
         return $this->belongsTo('App\Branch');
+    }
+
+    /**
+     * Student Log Info for Student.
+     */
+    public function studentLogInfo()
+    {
+        return $this->hasOne('App\StudentLogInfo', 'student_id');
+    }
+
+    /**
+     * Student Fees History.
+     */
+    public function studentFee()
+    {
+        return $this->hasMany('App\StudentFee');
     }
 
     /**

@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin;
 use Auth;
 use App\Branch;
 use App\Student;
+use App\FeeOffer;
+use Carbon\Carbon;
 use App\StudentLogInfo;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -52,9 +54,14 @@ class StudentController extends Controller
         if(!Auth::user()->is_admin && Auth::user()->checkAY() == null){
             return $this->respondWithFailure('Contact Admin and Select Academic Year', [], 200);
         }
+        $offer = FeeOffer::whereDate('start_date','<=', Carbon::now()->format('Y-m-d'))->whereDate('end_date','<=', Carbon::now()->format('Y-m-d'))->first();
         $validatedData = request()->validate(Student::validationRules());
         $validatedData['user_id'] = Auth::user()->id;
         unset($validatedData['student_image']);
+        $validatedData['fee_offers_id'] = $offer->id;
+        $validatedData['total_fee'] = $offer->fee;
+        $validatedData['unpaid_fee'] = $offer->fee - (($offer->fee * $offer->discount)/100);
+        $validatedData['discount'] = $offer->discount;
         $student = Student::create($validatedData);
         $slInfo = [
             'student_id' => $student->id,
@@ -86,7 +93,7 @@ class StudentController extends Controller
         })
         ->addColumn('action', function ($student) {
             $html = '';
-            $html .= '<a href="javascript:void(0)" data-url="'.route('admin.student.edit', ['student' => $student->id]) .'" class="btn waves-effect waves-light btn-warning btn-icon edit-form-button"><i class="icofont icofont-pen-alt-4"></i></a>';
+            $html .= '<a title="Edit" href="javascript:void(0)" data-url="'.route('admin.student.edit', ['student' => $student->id]) .'" class="btn waves-effect waves-light btn-warning btn-icon edit-form-button"><i class="icofont icofont-pen-alt-4"></i></a> <a title="Fees" href="'.route('admin.getFeeHistory', ['student_id' => $student->id]) .'" class="btn waves-effect waves-light btn-primary btn-icon"><i class="icofont icofont-coins"></i></a>';
             //$html .= '<a href="javascript:void(0)" data-url="' . route('admin.student.destroy', ['student' => $student->id]) . '" class="btn waves-effect waves-light btn-danger btn-icon delete-button"><i class="icofont icofont-trash"></i></a>';
             return $html;
         })

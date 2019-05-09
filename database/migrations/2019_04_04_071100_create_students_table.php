@@ -25,6 +25,10 @@ class CreateStudentsTable extends Migration
             $table->string('middle_name');
             $table->string('mobile_no');
             $table->text('finger')->nullable();
+            $table->integer('fee_offers_id');
+            $table->decimal('total_fee',10,2);
+            $table->decimal('unpaid_fee',10,2);
+            $table->decimal('discount',10,2);
             $table->timestamps();
             $table->foreign('branch_id')->references('id')->on('branches');
             $table->foreign('user_id')->references('id')->on('users');

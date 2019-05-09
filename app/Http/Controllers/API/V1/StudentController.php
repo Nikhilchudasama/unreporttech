@@ -4,9 +4,10 @@ namespace App\Http\Controllers\API\V1;
 
 use Validator;
 use App\Student;
+use App\FeeOffer;
+use App\StudentLogInfo;
 use Illuminate\Http\Request;
 use App\Http\Resources\StudentCollection;
-use App\StudentLogInfo;
 use App\Http\Resources\StudentResource;
 
 class StudentController extends ApiController
@@ -22,7 +23,6 @@ class StudentController extends ApiController
     {
         if($this->checkHeader() == null){
                 $studentList = Student::studentList(request()->user()->id, request()->input('offset'), request()->input('search'), request()->input('branch_id'), request()->input('academic_id'));
-                $studentList = Student::studentList(request()->user()->id, request()->input('offset'), request()->input('search'));
                 return $this->respondApi('Student List', new StudentCollection($studentList));
         }else{
             return $this->respondWithFailureApi($this->checkHeader(), [], false, 401);
@@ -51,8 +51,13 @@ class StudentController extends ApiController
                     $this->statusCode = 422;
                     return $this->respondWithFailureApi('Validation Error', $validate->errors());
                 }
+                $offer = FeeOffer::whereDate('start_date','<=', Carbon::now()->format('Y-m-d'))->whereDate('end_date','<=', Carbon::now()->format('Y-m-d'))->first();
                 $validatedData = request()->all();
                 $validatedData['user_id'] = request()->user()->id;
+                $validatedData['fee_offers_id'] = $offer->id;
+                $validatedData['total_fee'] = $offer->fee;
+                $validatedData['unpaid_fee'] = $offer->fee - (($offer->fee * $offer->discount)/100);
+                $validatedData['discount'] = $offer->discount;
                 unset($validatedData['student_image']);
                 unset($validatedData['academic_year_id']);
                 $student = Student::create($validatedData);

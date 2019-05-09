@@ -21,6 +21,9 @@ class StudentResource extends JsonResource
             'middle_name' => $this->middle_name,
             'mobile_no' => $this->mobile_no,
             'student_image' => $this->getFirstMediaUrl('student_image'),
+            'total_fee' => $this->total_fee,
+            'unpaid_fee' => $this->unpaid_fee,
+            'discount' => $this->discount
         ];
     }
 }

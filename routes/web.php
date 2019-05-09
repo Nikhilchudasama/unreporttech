@@ -44,6 +44,11 @@ Route::name('admin.')->namespace('Admin')->prefix('admin')->group(function () {
         // Setting Resource
         Route::resource('setting', 'SettingController');
 
+        // Student Fees
+        Route::get('fees/{student_id}','StudentFeeController@getStudentFeeRecord')->name('getFeeHistory');
+        Route::get('fees/add/{student_id}','StudentFeeController@create')->name('addFee');
+        Route::post('fees/store','StudentFeeController@store')->name('feestore');
+
     });
 
     // logout user

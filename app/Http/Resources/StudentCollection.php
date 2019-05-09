@@ -22,6 +22,9 @@ class StudentCollection extends ResourceCollection
                 'middle_name' => $student->middle_name,
                 'mobile_no' => $student->mobile_no,
                 'student_image' => $student->getFirstMediaUrl('student_image'),
+                'total_fee' => $student->total_fee,
+                'unpaid_fee' => $student->unpaid_fee,
+                'discount' => $student->discount
             ];
             return $data;
         });

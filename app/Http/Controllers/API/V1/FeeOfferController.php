@@ -41,26 +41,33 @@ class FeeOfferController extends ApiController
     public function createFO(Request $request)
     {
         if($this->checkHeader() == null){
-            if(request()->user()->is_admin){
-                $validate = Validator::make($request->all(), [
+            $offer = FeeOffer::whereDate('start_date','<=', Carbon::now()->format('Y-m-d'))->whereDate('end_date','<=', Carbon::now()->format('Y-m-d'))->first();
+            if($offer == null)
+            {
+                if (request()->user()->is_admin) {
+                    $validate = Validator::make($request->all(), [
                     'package_name' => 'required|string|max:255',
                     'start_date' => 'required|date',
                     'end_date' => 'required|date',
                     'fee' => 'required|numeric',
                     'discount' => 'required',
                 ]);
-                if ($validate->fails()) {
-                    $this->statusCode = 422;
-                    return $this->respondWithFailureApi('Validation Error', $validate->errors());
+                    if ($validate->fails()) {
+                        $this->statusCode = 422;
+                        return $this->respondWithFailureApi('Validation Error', $validate->errors());
+                    }
+                    $validatedData = request()->all();
+                    $validatedData['status'] = CommonFunctions::checkedCheckbox(request()->input('status'));
+                    $validatedData['user_id'] = request()->user()->id;
+                    FeeOffer::create($validatedData);
+                    return $this->respondApi('Fee offer created');
+                } else {
+                    $this->statusCode= 403;
+                    return $this->respondWithFailureApi('Forbidden');
                 }
-                $validatedData = request()->all();
-                $validatedData['status'] = CommonFunctions::checkedCheckbox(request()->input('status'));
-                $validatedData['user_id'] = request()->user()->id;
-                FeeOffer::create($validatedData);
-                return $this->respondApi('Fee offer created');
             }else{
-                $this->statusCode= 403;
-                return $this->respondWithFailureApi('Forbidden');
+                $this->statusCode= 422;
+                return $this->respondWithFailureApi('Already This Date Offer');
             }
         }else{
             return $this->respondWithFailureApi($this->checkHeader(), [], false, 401);

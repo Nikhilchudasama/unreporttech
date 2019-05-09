@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use Auth;
 use App\FeeOffer;
+use Carbon\Carbon;
 use App\CommonFunctions;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -40,11 +41,16 @@ class FeeOfferController extends Controller
      */
     public function store(Request $request)
     {
-        $validatedData = request()->validate(FeeOffer::validationRules());
-        $validatedData['user_id'] = Auth::user()->id;
-        $validatedData['status'] = CommonFunctions::checkedCheckbox(request()->input('status'));
-        $feeOffer = FeeOffer::create($validatedData);
-        return $this->respond('Record added',$feeOffer);
+        $offer = FeeOffer::whereDate('start_date','<=', Carbon::now()->format('Y-m-d'))->whereDate('end_date','<=', Carbon::now()->format('Y-m-d'))->first();
+        if ($offer == null) {
+            $validatedData = request()->validate(FeeOffer::validationRules());
+            $validatedData['user_id'] = Auth::user()->id;
+            $validatedData['status'] = CommonFunctions::checkedCheckbox(request()->input('status'));
+            $feeOffer = FeeOffer::create($validatedData);
+            return $this->respond('Record added', $feeOffer);
+        }else{
+            return $this->respondWithFailure('This Date already Offer', [], 200);
+        }
     }
 
     /**
@@ -65,7 +71,7 @@ class FeeOfferController extends Controller
         })
         ->addColumn('action', function ($feeOffer) {
             $html = '';
-            $html .= '<a href="javascript:void(0)" data-url="'.route('admin.feeOffer.edit', ['feeOffer' => $feeOffer->id]) .'" class="btn waves-effect waves-light btn-warning btn-icon edit-form-button"><i class="icofont icofont-pen-alt-4"></i></a>';   
+            $html .= '<a href="javascript:void(0)" data-url="'.route('admin.feeOffer.edit', ['feeOffer' => $feeOffer->id]) .'" class="btn waves-effect waves-light btn-warning btn-icon edit-form-button"><i class="icofont icofont-pen-alt-4"></i></a>';
             //$html .= '<a href="javascript:void(0)" data-url="' . route('admin.feeOffer.destroy', ['feeOffer' => $feeOffer->id]) . '" class="btn waves-effect waves-light btn-danger btn-icon delete-button"><i class="icofont icofont-trash"></i></a>';
             return $html;
         })

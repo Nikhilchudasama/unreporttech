@@ -124,16 +124,25 @@ class Student extends Model implements HasMedia
      * @param int $id user id
      * @param int $offset pagination offset
      * @param string $search search string
+     * @param int $branchId Branch Id
+     * @param int $academicId Academic Year Id
      * @return mixed|array
      **/
-    public static function studentList($id, $offset, $search)
+    public static function studentList($id, $offset, $search, $branchId, $academicId)
     {
         $result = static::query();
-        $result->where('user_id', $id);
+        $result->select('students.*');
+        if ($academicId) {
+            $result->leftJoin('student_log_infos','students.id','=','student_log_infos.student_id')->where('student_log_infos.academic_year_id', $academicId);
+        }
+        // $result->where('user_id', $id);
         if(!empty($search)){
         $result->where('first_name', 'LIKE', '%'.$search.'%')
                 ->where('last_name', 'LIKE', '%'.$search.'%')
                 ->where('middle_name', 'LIKE', '%'.$search.'%');
+        }
+        if($branchId){
+            $result->where('branch_id', $branchId);
         }
         return $result->orderBy('created_at', 'desc')
                 ->skip($offset*20)->take(20)

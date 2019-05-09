@@ -203,12 +203,18 @@ class User extends Authenticatable implements HasMedia
      * User list
      *
      * @param int $id user id
+     * @param int $offset Pagination
+     * @param string $search Searching Name
+     * @param int $branchId
      * @return mixed|array
      **/
-    public static function userList($id, $offset, $search)
+    public static function userList($id, $offset, $search, $branchId)
     {
         $result = static::query();
         $result->where('user_id', $id);
+        if($branchId){
+            $result->where('branch_id', $branchId);
+        }
         if(!empty($search)){
         $result->where('name', 'LIKE', '%'.$search.'%');
         }

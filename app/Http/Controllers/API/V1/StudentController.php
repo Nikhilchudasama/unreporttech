@@ -21,6 +21,7 @@ class StudentController extends ApiController
     public function studentList(Request $request)
     {
         if($this->checkHeader() == null){
+                $studentList = Student::studentList(request()->user()->id, request()->input('offset'), request()->input('search'), request()->input('branch_id'), request()->input('academic_id'));
                 $studentList = Student::studentList(request()->user()->id, request()->input('offset'), request()->input('search'));
                 return $this->respondApi('Student List', new StudentCollection($studentList));
         }else{

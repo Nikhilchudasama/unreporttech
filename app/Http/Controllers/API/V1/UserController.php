@@ -121,7 +121,7 @@ class UserController extends ApiController
     {
         if($this->checkHeader() == null){
             if(request()->user()->is_admin){
-                $userList = User::userList(request()->user()->id, request()->input('offset'), request()->input('search'));
+                $userList = User::userList(request()->user()->id, request()->input('offset'), request()->input('search'), request()->input('branch_id'));
                 return $this->respondApi('users', new UserCollection($userList));
             }else{
                 $this->statusCode= 403;

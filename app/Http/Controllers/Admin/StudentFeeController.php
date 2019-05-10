@@ -54,15 +54,22 @@ class StudentFeeController extends Controller
     public function store(Request $request)
     {
         $findStudent = Student::find(request()->student_id);
-        $feeData = [
-            'student_id' => request()->student_id,
-            'paid' => request()->paid,
-            'unpaid' => $findStudent->unpaid_fee - request()->paid
-        ];
-        StudentFee::create($feeData);
-        $findStudent->unpaid_fee = ($findStudent->unpaid_fee - request()->paid);
-        $findStudent->save();
-        return redirect()->route('admin.getFeeHistory', ['student_id' => request()->student_id]);
+        if (request()->paid > $findStudent->unpaid_fee)
+        {
+            return redirect()->back()->with(['type' => 'error', 'message' => 'Enter amount greater than unpaid fee']);
+        }
+        else
+        {
+            $feeData = [
+                'student_id' => request()->student_id,
+                'paid' => request()->paid,
+                'unpaid' => $findStudent->unpaid_fee - request()->paid
+            ];
+            StudentFee::create($feeData);
+            $findStudent->unpaid_fee = ($findStudent->unpaid_fee - request()->paid);
+            $findStudent->save();
+            return redirect()->route('admin.getFeeHistory', ['student_id' => request()->student_id]);
+        }
     }
 
     /**

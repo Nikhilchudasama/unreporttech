@@ -54,22 +54,31 @@ class StudentController extends Controller
         if(!Auth::user()->is_admin && Auth::user()->checkAY() == null){
             return $this->respondWithFailure('Contact Admin and Select Academic Year', [], 200);
         }
-        $offer = FeeOffer::whereDate('start_date','<=', Carbon::now()->format('Y-m-d'))->whereDate('end_date','<=', Carbon::now()->format('Y-m-d'))->first();
-        $validatedData = request()->validate(Student::validationRules());
-        $validatedData['user_id'] = Auth::user()->id;
-        unset($validatedData['student_image']);
-        $validatedData['fee_offers_id'] = $offer->id;
-        $validatedData['total_fee'] = $offer->fee;
-        $validatedData['unpaid_fee'] = $offer->fee - (($offer->fee * $offer->discount)/100);
-        $validatedData['discount'] = $offer->discount;
-        $student = Student::create($validatedData);
-        $slInfo = [
+        if (Auth::user()->is_admin) {
+            $offer = FeeOffer::where('user_id', Auth::user()->id)->whereDate('start_date', '<=', Carbon::now()->format('Y-m-d'))->whereDate('end_date', '<=', Carbon::now()->format('Y-m-d'))->first();
+        }else{
+            $offer = FeeOffer::where('user_id', Auth::user()->user_id)->whereDate('start_date', '<=', Carbon::now()->format('Y-m-d'))->whereDate('end_date', '<=', Carbon::now()->format('Y-m-d'))->first();
+        }
+        if ($offer) {
+            $validatedData = request()->validate(Student::validationRules());
+            $validatedData['user_id'] = Auth::user()->id;
+            unset($validatedData['student_image']);
+            $validatedData['fee_offers_id'] = $offer->id;
+            $validatedData['total_fee'] = $offer->fee;
+            $validatedData['unpaid_fee'] = $offer->fee - (($offer->fee * $offer->discount)/100);
+            $validatedData['discount'] = $offer->discount;
+            $student = Student::create($validatedData);
+            $slInfo = [
             'student_id' => $student->id,
             'academic_year_id' => Auth::user()->checkAY()->academic_year_id,
             ];
-        StudentLogInfo::create($slInfo);
-        $student->addMediaFromRequest('student_image')->toMediaCollection('student_image');
-        return $this->respond('Record added',$student);
+            StudentLogInfo::create($slInfo);
+            $student->addMediaFromRequest('student_image')->toMediaCollection('student_image');
+            return $this->respond('Record added', $student);
+        }
+        else{
+            return $this->respondWithFailure('Offer not available at that time so contact admin', [], 200);
+        }
     }
 
     /**

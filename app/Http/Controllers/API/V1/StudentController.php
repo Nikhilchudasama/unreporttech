@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API\V1;
 use Validator;
 use App\Student;
 use App\FeeOffer;
+use Carbon\Carbon;
 use App\StudentLogInfo;
 use Illuminate\Http\Request;
 use App\Http\Resources\StudentCollection;
@@ -51,23 +52,32 @@ class StudentController extends ApiController
                     $this->statusCode = 422;
                     return $this->respondWithFailureApi('Validation Error', $validate->errors());
                 }
-                $offer = FeeOffer::whereDate('start_date','<=', Carbon::now()->format('Y-m-d'))->whereDate('end_date','<=', Carbon::now()->format('Y-m-d'))->first();
-                $validatedData = request()->all();
-                $validatedData['user_id'] = request()->user()->id;
-                $validatedData['fee_offers_id'] = $offer->id;
-                $validatedData['total_fee'] = $offer->fee;
-                $validatedData['unpaid_fee'] = $offer->fee - (($offer->fee * $offer->discount)/100);
-                $validatedData['discount'] = $offer->discount;
-                unset($validatedData['student_image']);
-                unset($validatedData['academic_year_id']);
-                $student = Student::create($validatedData);
-                $student->addMediaFromRequest('student_image')->toMediaCollection('student_image');
-                $sadata = [
-                    'student_id' => $student->id,
-                    'academic_year_id' => request()->input('academic_year_id')
-                ];
-                StudentLogInfo::create($sadata);
-                return $this->respondApi('Student created');
+                if (request()->user()->is_admin) {
+                    $offer = FeeOffer::where('user_id', request()->user()->id)->whereDate('start_date', '<=', Carbon::now()->format('Y-m-d'))->whereDate('end_date', '<=', Carbon::now()->format('Y-m-d'))->first();
+                }else{
+                    $offer = FeeOffer::where('user_id', request()->user()->user_id)->whereDate('start_date', '<=', Carbon::now()->format('Y-m-d'))->whereDate('end_date', '<=', Carbon::now()->format('Y-m-d'))->first();
+                }
+                if($offer){
+                    $validatedData = request()->all();
+                    $validatedData['user_id'] = request()->user()->id;
+                    $validatedData['fee_offers_id'] = $offer->id;
+                    $validatedData['total_fee'] = $offer->fee;
+                    $validatedData['unpaid_fee'] = $offer->fee - (($offer->fee * $offer->discount)/100);
+                    $validatedData['discount'] = $offer->discount;
+                    unset($validatedData['student_image']);
+                    unset($validatedData['academic_year_id']);
+                    $student = Student::create($validatedData);
+                    $student->addMediaFromRequest('student_image')->toMediaCollection('student_image');
+                    $sadata = [
+                        'student_id' => $student->id,
+                        'academic_year_id' => request()->input('academic_year_id')
+                    ];
+                    StudentLogInfo::create($sadata);
+                    return $this->respondApi('Student created');
+                }
+                else{
+                    return $this->respondWithFailureApi('Offer not available at that time so contact admin', [], true, 200);
+                }
         }else{
             return $this->respondWithFailureApi($this->checkHeader(), [], false, 401);
         }
